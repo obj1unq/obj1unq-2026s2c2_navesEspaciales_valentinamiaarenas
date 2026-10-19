@@ -1,29 +1,68 @@
-class NaveDeCarga {
-
+class Nave {
 	var property velocidad = 0
+	const maximoAlcanzable = 300000
+
+	method recibirAmenaza() {
+
+	}
+	//2
+	method propulsar() {
+		if(velocidad + 20000 >= maximoAlcanzable) {
+			velocidad = maximoAlcanzable
+		} else {
+			velocidad =+ 20000
+		}
+	}
+	//4
+	method prepararseParaViaje() {
+		if(velocidad + 15000 >= maximoAlcanzable){
+			velocidad = maximoAlcanzable
+		} else {
+			velocidad =+ 15000
+		}
+	}
+	//5
+	method encontrarseConEnemigo() {
+		self.recibirAmenaza()
+		self.propulsar()
+	}
+}
+
+class NaveDeCarga inherits Nave{
 	var property carga = 0
 
 	method sobrecargada() = carga > 100000
 
 	method excedidaDeVelocidad() = velocidad > 100000
 
-	method recibirAmenaza() {
+	override method recibirAmenaza() {
 		carga = 0
 	}
 	
-	method enFalta() = self.sobrecargada() and self.excedidaDeVelocidad()
+	method estaEnFalta() = self.sobrecargada() and self.excedidaDeVelocidad()
 	
 	method acercamientoDeControl() {
-		if (self.enFalta()) {
+		if (self.estaEnFalta()) {
 			self.recibirAmenaza()
 		}
 	}
 
 }
+//3
+class NaveDeResiduosRadioactivos inherits NaveDeCarga {
+	//4
+	var property cerradoAlVacio = false
+	override method recibirAmenaza() {
+		velocidad = 0
+	}
+	//4
+	override method prepararseParaViaje() {
+		super()
+		cerradoAlVacio = true
+	}
+}
 
-class NaveDePasajeros {
-
-	var property velocidad = 0
+class NaveDePasajeros inherits Nave{
 	var property alarma = false
 	const cantidadDePasajeros = 0
 
@@ -33,14 +72,13 @@ class NaveDePasajeros {
 
 	method estaEnPeligro() = velocidad > self.velocidadMaximaPermitida() or alarma
 
-	method recibirAmenaza() {
+	override method recibirAmenaza() {
 		alarma = true
 	}
 
 }
 
-class NaveDeCombate {
-	var property velocidad = 0
+class NaveDeCombate inherits Nave{
 	var property modo = reposo
 	const property mensajesEmitidos = []
 
@@ -52,8 +90,14 @@ class NaveDeCombate {
 
 	method estaInvisible() = velocidad < 10000 and modo.invisible()
 
-	method recibirAmenaza() {
+	override method recibirAmenaza() {
 		modo.recibirAmenaza(self)
+	}
+
+	//4
+	override method prepararseParaViaje() {
+		super()
+		modo.prepararseParaViaje(self)
 	}
 
 }
@@ -66,6 +110,11 @@ object reposo {
 		nave.emitirMensaje("¡RETIRADA!")
 	}
 
+	method prepararseParaViaje(nave) {
+		nave.emitirMensaje("Saliendo en mision")
+		nave.modo(ataque)
+	}
+
 }
 
 object ataque {
@@ -74,6 +123,10 @@ object ataque {
 
 	method recibirAmenaza(nave) {
 		nave.emitirMensaje("Enemigo encontrado")
+	}
+
+	method prepararseParaViaje(nave) {
+		nave.emitirMensaje("Volviendo a la base")
 	}
 
 }

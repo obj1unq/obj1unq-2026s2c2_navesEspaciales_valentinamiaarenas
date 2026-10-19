@@ -36,6 +36,12 @@ describe "Nave de carga" {
 		naveLlena.acercamientoDeControl()
 		assert.equals(100, naveLlena.carga())
 	}
+	//2
+	test "al propulsarse" {
+		naveVacia.propulsar()
+
+		assert.equals(20000, naveVacia.velocidad())
+	}
 
 }
 
@@ -62,6 +68,26 @@ describe "Nave de pasajeros" {
 
 	test "recibir amenaza" {
 		naveSinPasajeros.recibirAmenaza()
+		assert.that(naveSinPasajeros.alarma())
+	}
+	//2
+	test "al propulsarse" {
+		//const naveConVelocidad = new NaveDePasajeros(cantidadDePasajeros = 1, velocidad = 290000)
+		naveConPasajeros.propulsar()
+
+		assert.equals(300000, naveConPasajeros.velocidad())
+	}
+	//4
+	test "prepararse para viajar" {
+		naveConPasajeros.prepararseParaViaje()
+
+		assert.equals(300000, naveConPasajeros.velocidad())
+	}
+	//5
+	test "enfrenta enemigo" {
+		naveSinPasajeros.encontrarseConEnemigo()
+
+		assert.equals(20000, naveSinPasajeros.velocidad())
 		assert.that(naveSinPasajeros.alarma())
 	}
 
@@ -93,5 +119,39 @@ describe "Nave de combate" {
 	test "recibir amenaza en ataque" {
 		naveEnAtaque.recibirAmenaza()
 		assert.equals("Enemigo encontrado", naveEnAtaque.ultimoMensaje())
+	}
+	//4
+	test "prepararse para viaje en ataque" {
+		naveEnAtaque.prepararseParaViaje()
+
+		assert.equals("Volviendo a la base", naveEnAtaque.mensajesEmitidos().get(0))
+
+		
+	}
+
+	test "prepararse para viaje en repodo" {
+		naveEnReposo.prepararseParaViaje()
+
+		assert.equals("Saliendo en mision", naveEnReposo.mensajesEmitidos().get(0))
+	}
+}
+
+//3
+describe "Nave de residuos radioactivos" {
+	test "recibir amenaza" {
+	const naveConResiduos = new NaveDeResiduosRadioactivos(carga = 5000, velocidad = 10000, cerradoAlVacio = false)
+		naveConResiduos.recibirAmenaza()
+
+		assert.equals(5000, naveConResiduos.carga())
+		assert.equals(0, naveConResiduos.velocidad())
+	}
+	//4
+	test "prepararse para viaje" {
+	const naveConResiduosEnViaje = new NaveDeResiduosRadioactivos(velocidad = 0, cerradoAlVacio = false)
+
+		naveConResiduosEnViaje.prepararseParaViaje()
+
+		assert.equals(15000, naveConResiduosEnViaje.velocidad())
+		assert.that(naveConResiduosEnViaje.cerradoAlVacio())
 	}
 }
